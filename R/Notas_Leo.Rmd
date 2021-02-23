@@ -1,0 +1,18 @@
+---
+title: "notas_Leo"
+author: "LeoC426"
+date: "23/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### CellaRepertorium
+### Nebulosa
+### Velociraptor
+Se hizo una comparacion entre paquetes entre varias personas sobre si responden los
+autores a los reportes de bugs, solo responden velociraptor y nebulosa, aparte en los reportes
+de los sistemas operativos de Nebulosa el Check sale error en todos los sistemas operativos...
+El paquete que me mas me gusto fue CellaRepertorium, aunque el nombre de Velociraptor fue
+el más llamativos aunque con muchos errores reportados por los usuarios.

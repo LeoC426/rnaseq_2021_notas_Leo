@@ -1,0 +1,63 @@
+---
+title: "recount3_leo"
+author: "LeoC426"
+date: "24/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+## Load recount3 R package
+library("recount3")
+```
+
+```{r}
+## Revisemos todos los proyectos con datos de humano en recount3
+human_projects <- available_projects()
+```
+```{r}
+proj_info <- subset(
+    human_projects,
+    project == "SRP009615" & project_type == "data_sources"
+)
+## Crea un objetio de tipo RangedSummarizedExperiment (RSE)
+## con la información a nivel de genes
+rse_gene_SRP009615 <- create_rse(proj_info)
+```
+```{r}
+## Explora los proyectos disponibles de forma interactiva
+proj_info_interactive <- interactiveDisplayBase::display(human_projects)
+```
+```{r}
+## Aquí verificamos que solo seleccionaste un solo renglón.
+stopifnot(nrow(proj_info_interactive) == 1)
+```
+
+```{r}
+## Crea el objeto RSE
+rse_gene_interactive <- create_rse(proj_info_interactive)
+```
+
+```{r}
+## Convirtamos las cuentas por nucleotido a cuentas por lectura
+## usando compute_read_counts().
+## Para otras transformaciones como RPKM y TPM, revisa transform_counts().
+assay(rse_gene_SRP009615, "counts") <- compute_read_counts(rse_gene_SRP009615)
+```
+
+```{r}
+## Para este estudio en específico, hagamos más fácil de usar la
+## información del experimento
+rse_gene_SRP009615 <- expand_sra_attributes(rse_gene_SRP009615)
+colData(rse_gene_SRP009615)[
+    ,
+    grepl("^sra_attribute", colnames(colData(rse_gene_SRP009615)))
+]
+```
+
+```{r}
+iSEE::iSEE(rse_gene_SRP009615)
+```
+

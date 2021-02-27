@@ -1,0 +1,59 @@
+---
+title: "revision"
+author: "LeoC426"
+date: "26/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+#speaqeasy_data <- file.path(tempdir(), "rse_speaqeasy.RData")
+#download.file("https://github.com/LieberInstitute/SPEAQeasy-example/blob/master/rse_speaqeasy.RData?raw=true", speaqeasy_data, mode = "wb")
+#library("SummarizedExperiment")
+#load(speaqeasy_data, verbose = TRUE)
+## se corrio en la consola 
+```
+
+# ¿Cuantos genes y muestras tenemos en estos datos?
+```{r}
+rse_gene
+```
+Respuesta: hay 60609 genes 
+#¿Hay diferencias en totalAssignedGene o mitoRate entre los grupos de diagnosis (PrimaryDx)?
+```{r}
+m<-'Bipolar'
+Bipo<-(rse_gene$PrimaryDx==m)
+control<-(rse_gene$PrimaryDx!=m)
+rse_gene$Bipo <- factor(ifelse(rse_gene$PrimaryDx == m, "Bipo", "Control"))
+library("ggplot2")
+ggplot(as.data.frame(colData(rse_gene)), aes(y =totalAssignedGene , x = Bipo)) +
+     geom_boxplot() +
+     theme_bw(base_size = 20) +
+     ylab("") +
+     xlab("Grupo")
+ggplot(as.data.frame(colData(rse_gene)), aes(y =mitoRate , x = Bipo)) +
+     geom_boxplot() +
+     theme_bw(base_size = 20) +
+     ylab("") +
+     xlab("Grupo")
+```
+
+#Grafica la expresión de SNAP25 para cada grupo de diagnosis.
+```{r}
+#library("iSEE")
+#iSEE::iSEE(rse_gene)
+```
+
+#Sugiere un modelo estadistico que podríamos usar en una análisis de expresión diferencial. Verifica que si sea un modelo full rank. ¿Cúal sería el o los coeficientes de interés?
+```{r}
+sampleData <- data.frame(sexo=rse_gene$Sex, edadMuerte=rse_gene$AgeDeath,grupo=rse_gene$PrimaryDx)
+vd <- ExploreModelMatrix::VisualizeDesign(
+    sampleData = sampleData,
+    designFormula = ~ grupo + grupo:sexo + grupo:edadMuerte,
+    textSizeFitted = 4
+)
+cowplot::plot_grid(plotlist = vd$plotlist)
+```
+
